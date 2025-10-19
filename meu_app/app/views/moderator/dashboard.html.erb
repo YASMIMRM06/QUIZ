@@ -1,0 +1,8 @@
+<h1>Área do Professor</h1>
+<p>Bem-vindo, <%= current_user.name %>!</p>
+
+<ul>
+  <li><%= link_to "Criar novo Questionário", new_questionnaire_path %></li>
+  <li><%= link_to "Meus Questionários", questionnaires_path %></li>
+  <li><%= link_to "Resultados dos meus alunos", "#" %></li>
+</ul>

@@ -1,0 +1,33 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-lg border-0">
+      <div class="card-header bg-warning text-dark text-center">
+        <h4>Redefinir Senha</h4>
+      </div>
+      <div class="card-body p-4">
+        <%= form_with(model: resource, as: resource_name, url: password_path(resource_name), html: { method: :put }, local: true) do |f| %>
+          <%= hidden_field_tag :reset_password_token, params[:reset_password_token] %>
+
+          <div class="mb-3">
+            <%= f.label :password, "Nova Senha", class: "form-label" %>
+            <%= f.password_field :password, class: "form-control", autofocus: true, autocomplete: "new-password" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :password_confirmation, "Confirmar Nova Senha", class: "form-label" %>
+            <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "new-password" %>
+          </div>
+
+          <div class="d-grid">
+            <%= f.submit "Alterar Minha Senha", class: "btn btn-warning btn-lg" %>
+          </div>
+        <% end %>
+
+        <hr>
+        <div class="text-center">
+          <%= render "devise/shared/links" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
