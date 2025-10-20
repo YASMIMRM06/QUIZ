@@ -1,5 +1,5 @@
 class RenameUserColumnInQuestionnaires < ActiveRecord::Migration[7.1]
   def change
-    rename_column :questionnaires, :user, :user_id
+    # Esta migration já não é necessária
   end
 end

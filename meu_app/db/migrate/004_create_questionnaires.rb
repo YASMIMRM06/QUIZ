@@ -1,6 +1,6 @@
 class CreateQuestionnaires < ActiveRecord::Migration[7.0]
   def change
-    create_table :questionnaires, id: :uuid do |t|
+    create_table :questionnaires do |t|
       t.string :code, null: false
       t.string :title, null: false
       t.string :description
