@@ -1,15 +1,19 @@
 class User < ApplicationRecord
-  # Devise modules (escolha conforme necessidade)
-  # :confirmable, :lockable, :timeoutable, :trackable e :omniauthable são opcionais
+  rolify
+  has_many :questionnaires, dependent: :destroy
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
   has_many :user_roles
   has_many :roles, through: :user_roles
 
-  has_many :user_results
-  has_many :user_answer_histories
+  def add_role(role_name)
+    role = Role.find_or_create_by(title: role_name)
+    roles << role unless roles.include?(role)
+  end
 
-  validates :name, presence: true
-  validates :suap_id, presence: true
+  def has_role?(role_name)
+    roles.exists?(title: role_name)
+  end
 end
