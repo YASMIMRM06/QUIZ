@@ -6,3 +6,6 @@ TELAS
 
 /users/sign_up
 ![alt text](image-1.png)
+
+/users/password/new
+![alt text](image-2.png)
