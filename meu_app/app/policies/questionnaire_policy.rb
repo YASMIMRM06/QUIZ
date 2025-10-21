@@ -1,34 +1,58 @@
 class QuestionnairePolicy < ApplicationPolicy
-  # Escopo que define quais registros o usuário pode ver
-  class Scope < Scope
-    def resolve
-      if user.has_role?("Administrador")
-        scope.all
-      elsif user.has_role?("Professor")
-        scope.where(user_id: user.id)
-      else # Aluno
-        scope.all # Ou filtrar apenas questionários ativos/publicados
-      end
-    end
+
+  def respond?
+    user.student?
+  end
+
+  def question?
+    user.student?
+  end
+
+  def submit_answer?
+    user.student?
+  end
+
+  def result?
+    user.admin? || user.moderator? || (user.student? && record.user_id == user.id)
   end
 
   def index?
-    user.present?
+    true
   end
 
   def show?
-    user.present?
+    true
+  end
+
+  def new?
+    user.admin? || user.moderator?
+  end
+
+  def edit?
+    user.admin? || (user.moderator? && record.user_id == user.id)
   end
 
   def create?
-    user.has_role?("Administrador") || user.has_role?("Professor")
+    user.admin? || user.moderator?
   end
 
   def update?
-    user.has_role?("Administrador") || (user.has_role?("Professor") && record.user_id == user.id)
+    user.admin? || (user.moderator? && record.user_id == user.id)
   end
 
   def destroy?
-    user.has_role?("Administrador") || (user.has_role?("Professor") && record.user_id == user.id)
+    user.admin? || (user.moderator? && record.user_id == user.id)
+  end
+
+  class Scope < ApplicationPolicy::Scope
+    def resolve
+      if user.admin?
+        scope.all
+      elsif user.moderator?
+        scope.where(user_id: user.id)
+      else
+        scope.none
+      end
+    end
   end
 end

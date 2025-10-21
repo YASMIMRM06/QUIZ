@@ -1,0 +1,24 @@
+<nav class="bg-white border-b border-gray-200 shadow-sm mb-6">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    
+    <ul class="flex items-center space-x-6 text-gray-700 font-medium">
+      <li>
+        <%= link_to "Home", root_path, class: "hover:text-blue-600 transition" %>
+      </li>
+    </ul>
+
+    <div class="flex items-center space-x-4">
+      <% if user_signed_in? %>
+        <span class="text-sm text-gray-600">
+          <%= current_user.email %>
+        </span>
+
+        <%= link_to "Deslogar", destroy_user_session_path,
+          method: :delete,
+          data: { turbo_method: :delete },
+          class: "text-red-600 hover:text-red-800 font-semibold text-sm transition"
+        %>
+      <% end %>
+    </div>
+  </div>
+</nav>

@@ -1,6 +1,4 @@
 class Role < ApplicationRecord
-  has_and_belongs_to_many :users, join_table: :user_roles
-  belongs_to :resource, polymorphic: true, optional: true
-
-  validates :title, presence: true
+    has_many :users, dependent: :destroy
+    validates :title, uniqueness: true
 end

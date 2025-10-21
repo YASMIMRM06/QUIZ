@@ -1,19 +1,21 @@
 class User < ApplicationRecord
-  rolify
+  belongs_to :role
+  has_many :user_answer_histories, dependent: :destroy
+  has_many :user_results, dependent: :destroy
   has_many :questionnaires, dependent: :destroy
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
-
-  has_many :user_roles
-  has_many :roles, through: :user_roles
-
-  def add_role(role_name)
-    role = Role.find_or_create_by(title: role_name)
-    roles << role unless roles.include?(role)
+  def admin?
+    role.title == 'admin'
   end
 
-  def has_role?(role_name)
-    roles.exists?(title: role_name)
+  def moderator?
+    role.title == 'moderator'
+  end
+
+  def student?
+    role.title == 'student'
   end
 end

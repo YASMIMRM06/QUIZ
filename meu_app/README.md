@@ -1,14 +1,8 @@
-http://localhost:3000/
+ACESSO EM http://localhost:3000
 
-Sistema de Questionários
-
-TELA INICIAL
+TELAS
+/users/sign_in
 ![alt text](image.png)
 
-CRIAR CONTA
+/users/sign_up
 ![alt text](image-1.png)
-
-RECUPERAR SENHA
-![alt text](image-2.png)
-    Sucesso
-    ![alt text](image-3.png)

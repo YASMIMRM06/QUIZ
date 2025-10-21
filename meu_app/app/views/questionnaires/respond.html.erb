@@ -1,0 +1,4 @@
+<h1><%= @questionnaire.title %></h1>
+<p><%= @questionnaire.description %></p>
+
+<%= link_to "Começar Questionário", question_questionnaire_path(@questionnaire, @first_question), class: "" %>

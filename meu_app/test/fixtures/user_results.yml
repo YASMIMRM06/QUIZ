@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  correct_answers: 1
+  total_questions: 1
+  score: 9.99
+  submitted_at: 2025-10-12 19:12:43
+  user: one
+  questionnaire: one
+
+two:
+  correct_answers: 1
+  total_questions: 1
+  score: 9.99
+  submitted_at: 2025-10-12 19:12:43
+  user: two
+  questionnaire: two

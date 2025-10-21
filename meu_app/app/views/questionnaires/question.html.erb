@@ -1,0 +1,12 @@
+<h2><%= @question.enunciation %></h2>
+
+<%= form_with url: submit_answer_questionnaire_path(@questionnaire, @question), method: :post do %>
+  <% @question.question_options.each do |option| %>
+    <div>
+      <%= radio_button_tag :option_id, option.id, false, id: "option_#{option.id}" %>
+      <%= label_tag "option_#{option.id}", option.title %>
+    </div>
+  <% end %>
+
+  <%= submit_tag "Responder", class: "" %>
+<% end %>

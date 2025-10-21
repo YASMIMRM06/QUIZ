@@ -1,33 +1,29 @@
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card shadow-lg border-0">
-      <div class="card-header bg-warning text-dark text-center">
-        <h4>Redefinir Senha</h4>
-      </div>
-      <div class="card-body p-4">
-        <%= form_with(model: resource, as: resource_name, url: password_path(resource_name), html: { method: :put }, local: true) do |f| %>
-          <%= hidden_field_tag :reset_password_token, params[:reset_password_token] %>
+<div class="max-w-md mx-auto mt-16 p-8 bg-white shadow-2xl rounded-3xl border border-pink-200">
+  <h2 class="text-2xl font-bold mb-6 text-center text-pink-600">Troque sua senha</h2>
 
-          <div class="mb-3">
-            <%= f.label :password, "Nova Senha", class: "form-label" %>
-            <%= f.password_field :password, class: "form-control", autofocus: true, autocomplete: "new-password" %>
-          </div>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+    <%= f.hidden_field :reset_password_token %>
 
-          <div class="mb-3">
-            <%= f.label :password_confirmation, "Confirmar Nova Senha", class: "form-label" %>
-            <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "new-password" %>
-          </div>
-
-          <div class="d-grid">
-            <%= f.submit "Alterar Minha Senha", class: "btn btn-warning btn-lg" %>
-          </div>
-        <% end %>
-
-        <hr>
-        <div class="text-center">
-          <%= render "devise/shared/links" %>
-        </div>
-      </div>
+    <div class="mb-4">
+      <%= f.label :password, "Nova senha", class: "block text-pink-700 font-medium mb-2" %>
+      <% if @minimum_password_length %>
+        <p class="text-sm text-pink-400 mb-1">(<%= @minimum_password_length %> caracteres mínimo)</p>
+      <% end %>
+      <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "w-full px-4 py-2 border border-pink-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300" %>
     </div>
+
+    <div class="mb-6">
+      <%= f.label :password_confirmation, "Confirme a nova senha", class: "block text-pink-700 font-medium mb-2" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full px-4 py-2 border border-pink-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300" %>
+    </div>
+
+    <div>
+      <%= f.submit "Alterar senha", class: "w-full bg-pink-500 text-white py-2 px-4 rounded-xl hover:bg-pink-600 transition" %>
+    </div>
+  <% end %>
+
+  <div class="text-center text-sm text-pink-500 mt-4">
+    <%= render "devise/shared/links" %>
   </div>
 </div>

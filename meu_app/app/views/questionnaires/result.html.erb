@@ -1,0 +1,6 @@
+<h1>Resultado</h1>
+
+<p>Você acertou <%= @user_result.correct_answers %> de <%= @user_result.total_questions %>.</p>
+<p>Pontuação: <%= @user_result.score_percentage %>%</p>
+
+<%= link_to "Voltar aos questionários", questionnaires_path, class: "" %>

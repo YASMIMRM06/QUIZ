@@ -1,22 +1,16 @@
 class ApplicationController < ActionController::Base
-  include Pundit::Authorization
+    include Pundit
 
-  before_action :configure_permitted_parameters, if: :devise_controller?
+    rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
-  # 🔹 Aplica Pundit apenas nos controladores do seu app (não nos do Devise)
-  after_action :verify_authorized, unless: :skip_pundit?
-  after_action :verify_policy_scoped, unless: :skip_pundit?
+    private
 
-  protected
+    def user_not_authorized
+        flash[:alert] = "Você não tem permissão para realizar essa ação."
+        redirect_to(request.referrer || root_path)
+    end
 
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
-  end
-
-  private
-
-  # 🔹 Método inteligente para ignorar Devise e algumas rotas específicas
-  def skip_pundit?
-    devise_controller? || params[:controller] =~ /(active_storage|rails_admin|devise)/
-  end
+    def after_sign_out_path_for(resource_or_scope)
+        new_user_session_path
+    end
 end
