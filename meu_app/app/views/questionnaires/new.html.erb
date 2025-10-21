@@ -1,9 +1,11 @@
-<% content_for :title, "New questionnaire" %>
+<% content_for :title, "Novo Questionário" %>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">New questionnaire</h1>
+<div class="md:w-2/3 w-full bg-pink-50 border border-pink-200 rounded-3xl shadow-md p-8 mx-auto mt-10">
+  <h1 class="font-bold text-4xl text-pink-700 mb-6 text-center">Novo Questionário</h1>
 
   <%= render "form", questionnaire: @questionnaire %>
 
-  <%= link_to "Back to questionnaires", questionnaires_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  <div class="mt-4 text-center">
+    <%= link_to "Voltar aos questionários", questionnaires_path, class: "inline-block rounded-xl px-3.5 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium transition" %>
+  </div>
 </div>

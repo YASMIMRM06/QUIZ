@@ -1,12 +1,14 @@
-<h2><%= @question.enunciation %></h2>
+<div class="max-w-3xl mx-auto mt-10 bg-pink-50 border border-pink-200 rounded-3xl shadow-md p-8 space-y-6">
+  <h2 class="font-bold text-2xl text-pink-700 mb-4 text-center"><%= @question.enunciation %></h2>
 
-<%= form_with url: submit_answer_questionnaire_path(@questionnaire, @question), method: :post do %>
-  <% @question.question_options.each do |option| %>
-    <div>
-      <%= radio_button_tag :option_id, option.id, false, id: "option_#{option.id}" %>
-      <%= label_tag "option_#{option.id}", option.title %>
-    </div>
+  <%= form_with url: submit_answer_questionnaire_path(@questionnaire, @question), method: :post, class: "space-y-4" do %>
+    <% @question.question_options.each do |option| %>
+      <div class="flex items-center gap-3 bg-white border border-pink-200 rounded-xl px-4 py-3 hover:bg-pink-50 transition">
+        <%= radio_button_tag :option_id, option.id, false, id: "option_#{option.id}", class: "h-5 w-5 accent-pink-500" %>
+        <%= label_tag "option_#{option.id}", option.title, class: "text-pink-700 font-medium" %>
+      </div>
+    <% end %>
+
+    <%= submit_tag "Responder", class: "w-full rounded-xl py-3 px-4 bg-pink-500 hover:bg-pink-600 text-white font-bold transition" %>
   <% end %>
-
-  <%= submit_tag "Responder", class: "" %>
-<% end %>
+</div>

@@ -1,6 +1,8 @@
-<h1>Resultado</h1>
+<div class="max-w-3xl mx-auto mt-10 bg-pink-50 border border-pink-200 rounded-3xl shadow-md p-8 text-center space-y-6">
+  <h1 class="font-bold text-3xl text-pink-700">Resultado</h1>
 
-<p>Você acertou <%= @user_result.correct_answers %> de <%= @user_result.total_questions %>.</p>
-<p>Pontuação: <%= @user_result.score_percentage %>%</p>
+  <p class="text-pink-700 text-lg">Você acertou <strong><%= @user_result.correct_answers %></strong> de <strong><%= @user_result.total_questions %></strong>.</p>
+  <p class="text-pink-700 text-lg">Pontuação: <strong><%= @user_result.score_percentage %>%</strong></p>
 
-<%= link_to "Voltar aos questionários", questionnaires_path, class: "" %>
+  <%= link_to "Voltar aos questionários", questionnaires_path, class: "inline-block rounded-xl px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-bold transition" %>
+</div>
