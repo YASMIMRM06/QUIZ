@@ -14,7 +14,10 @@ TELA USUARIO
 ![alt text](image-3.png)
 
 /questionnaires
-![alt text](image-4.png)
+![alt text](image-12.png)
+
+/questionnaires/new
+![alt text](image-11.png)
 
 /questions
 ![alt text](image-5.png)

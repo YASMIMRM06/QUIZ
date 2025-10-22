@@ -1,6 +1,6 @@
 class QuestionnairesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_questionnaire, only: %i[ result submit_answer respond question calculate_result show edit update destroy ]
+  #before_action :set_questionnaire, only: %i[ result submit_answer respond question calculate_result show edit update destroy ]
 
   def respond
     @first_question = @questionnaire.questions.first
