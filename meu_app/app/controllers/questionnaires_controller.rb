@@ -1,6 +1,8 @@
 class QuestionnairesController < ApplicationController
   before_action :authenticate_user!
-  #before_action :set_questionnaire, only: %i[ result submit_answer respond question calculate_result show edit update destroy ]
+  before_action :set_questionnaire, only: %i[
+    respond question submit_answer result show edit update destroy
+  ]
 
   def respond
     @first_question = @questionnaire.questions.first
@@ -16,7 +18,7 @@ class QuestionnairesController < ApplicationController
     @question = @questionnaire.questions.find(params[:id])
     authorize @question
 
-    # Aqui vai evitar respostas duplicada
+    # Evita respostas duplicadas
     already_answered = UserAnswerHistory.exists?(user: current_user, question: @question)
     unless already_answered
       question_option = QuestionOption.find_by(id: params[:option_id])
@@ -30,7 +32,7 @@ class QuestionnairesController < ApplicationController
       )
     end
 
-    # Aqui vai verificar se tem uma proxima questao para poder gerar o result
+    # Ir para próxima questão ou finalizar
     next_question = @questionnaire.questions.where("id > ?", @question.id).first
 
     if next_question
@@ -46,20 +48,19 @@ class QuestionnairesController < ApplicationController
     authorize @user_result
   end
 
-  # GET /questionnaires or /questionnaires.json
+  # GET /questionnaires
   def index
-    @questionnaires = Questionnaire.all
     @questionnaires = policy_scope(Questionnaire)
   end
 
-  # GET /questionnaires/1 or /questionnaires/1.json
+  # GET /questionnaires/1
   def show
     authorize @questionnaire
   end
 
-  # GET /questionnaires/new
+  # GET /questionnaires/new ✅ Tempo mínimo de 15 minutos definido automaticamente
   def new
-    @questionnaire = Questionnaire.new
+    @questionnaire = Questionnaire.new(duration_minutes: 15)
     authorize @questionnaire
   end
 
@@ -68,7 +69,7 @@ class QuestionnairesController < ApplicationController
     authorize @questionnaire
   end
 
-  # POST /questionnaires or /questionnaires.json
+  # POST /questionnaires
   def create
     @questionnaire = Questionnaire.new(questionnaire_params)
     authorize @questionnaire
@@ -85,7 +86,7 @@ class QuestionnairesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /questionnaires/1 or /questionnaires/1.json
+  # PATCH/PUT /questionnaires/1
   def update
     authorize @questionnaire
 
@@ -100,7 +101,7 @@ class QuestionnairesController < ApplicationController
     end
   end
 
-  # DELETE /questionnaires/1 or /questionnaires/1.json
+  # DELETE /questionnaires/1
   def destroy
     authorize @questionnaire
     @questionnaire.destroy!
@@ -112,30 +113,29 @@ class QuestionnairesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_questionnaire
-      @questionnaire = Questionnaire.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def questionnaire_params
-      params.require(:questionnaire).permit(:code, :title, :description, :duration_minutes)
-    end
+  def set_questionnaire
+    @questionnaire = Questionnaire.find(params[:id])
+  end
 
-    def calculate_result
-      answers = current_user.user_answer_histories.joins(:question_option).where(questions: { questionnaire_id: @questionnaire.id })
+  def questionnaire_params
+    params.require(:questionnaire).permit(:code, :title, :description, :duration_minutes)
+  end
 
-      total = @questionnaire.questions.count
-      correct = answers.where(question_options: { is_correct: true }).count
-      percentage = ((correct.to_f / total) * 100).round(2)
+  def calculate_result
+    answers = current_user.user_answer_histories.joins(:question_option).where(questions: { questionnaire_id: @questionnaire.id })
 
-      UserResult.create!(
-        user: current_user,
-        questionnaire: @questionnaire,
-        correct_answers: correct,
-        total_questions: total,
-        score: percentage,
-        submitted_at: Time.current
-      )
-    end
+    total = @questionnaire.questions.count
+    correct = answers.where(question_options: { is_correct: true }).count
+    percentage = ((correct.to_f / total) * 100).round(2)
+
+    UserResult.create!(
+      user: current_user,
+      questionnaire: @questionnaire,
+      correct_answers: correct,
+      total_questions: total,
+      score: percentage,
+      submitted_at: Time.current
+    )
+  end
 end

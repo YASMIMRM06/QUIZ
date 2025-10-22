@@ -1,24 +1,44 @@
-<%= form_with(model: questionnaire, class: "contents") do |form| %>
-  <% if questionnaire.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(questionnaire.errors.count, "error") %> proibiram este questionário de ser salvo:</h2>
+<div class="max-w-2xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-10 border border-pink-300">
+  <h1 class="text-2xl font-bold text-center text-pink-600 mb-6">
+    <%= questionnaire.new_record? ? "Criar Questionário" : "Editar Questionário" %>
+  </h1>
 
-      <ul class="list-disc ml-6">
-        <% questionnaire.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+  <%= form_with(model: questionnaire, class: "space-y-5") do |form| %>
+    <% if questionnaire.errors.any? %>
+      <div class="bg-pink-50 text-pink-600 p-4 rounded-md border border-pink-300">
+        <h2 class="font-semibold mb-2">
+          <%= pluralize(questionnaire.errors.count, "erro") %> impediram o salvamento:
+        </h2>
+        <ul class="list-disc ml-5">
+          <% questionnaire.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.label :code, class: "font-medium text-pink-700" %>
+      <%= form.text_field :code, class: "block w-full border rounded-md px-3 py-2 mt-1 shadow-sm border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400" %>
+    </div>
+
+    <div>
+      <%= form.label :title, class: "font-medium text-pink-700" %>
+      <%= form.text_field :title, class: "block w-full border rounded-md px-3 py-2 mt-1 shadow-sm border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400" %>
+    </div>
+
+    <div>
+      <%= form.label :description, class: "font-medium text-pink-700" %>
+      <%= form.text_field :description, class: "block w-full border rounded-md px-3 py-2 mt-1 shadow-sm border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400" %>
+    </div>
+
+    <div>
+      <%= form.label :duration_minutes, class: "font-medium text-pink-700" %>
+      <%= form.number_field :duration_minutes, class: "block w-full border rounded-md px-3 py-2 mt-1 shadow-sm border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400" %>
+    </div>
+
+    <div class="text-center">
+      <%= form.submit (questionnaire.new_record? ? "Criar" : "Atualizar"), class: "px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-md cursor-pointer transition" %>
     </div>
   <% end %>
-
-  <% [:code, :title, :description, :duration_minutes].each do |field| %>
-    <div class="my-5">
-      <%= form.label field, class: "block text-pink-700 font-medium mb-2" %>
-      <%= form.send("#{field}_field", class: ["block shadow-sm rounded-xl border px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-300", {"border-red-400": questionnaire.errors[field].any?, "border-pink-300": questionnaire.errors[field].none?}]) %>
-    </div>
-  <% end %>
-
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-xl px-3.5 py-2.5 bg-pink-500 hover:bg-pink-600 text-white font-medium transition cursor-pointer" %>
-  </div>
-<% end %>
+</div>
