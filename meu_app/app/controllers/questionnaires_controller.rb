@@ -1,6 +1,6 @@
 class QuestionnairesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_questionnaire, only: %i[respond submit_answers result show edit update destroy]
+  before_action :set_questionnaire, only: %i[respond submit_answers result all_results show edit update destroy]
 
   # --- INÍCIO DO QUESTIONÁRIO ---
   def respond
@@ -32,10 +32,23 @@ class QuestionnairesController < ApplicationController
     redirect_to result_questionnaire_path(@questionnaire), notice: "Questionário finalizado!"
   end
 
-  # --- RESULTADO DO USUÁRIO ---
+  # --- RESULTADO INDIVIDUAL ---
   def result
     @user_result = current_user.user_results.find_by(questionnaire: @questionnaire)
-    authorize @questionnaire, :result?
+    unless @user_result
+      redirect_to respond_questionnaire_path(@questionnaire), alert: "Nenhum resultado encontrado. Por favor, envie suas respostas."
+      return
+    end
+  end
+
+  # --- RESULTADOS DE TODOS OS ALUNOS (ADMIN/MODERATOR) ---
+  def all_results
+    unless current_user.admin? || current_user.moderator?
+      redirect_to questionnaires_path, alert: "Você não tem permissão para ver os resultados de todos os alunos."
+      return
+    end
+
+    @all_results = @questionnaire.user_results.includes(:user)
   end
 
   # --- CRUD DE QUESTIONÁRIOS ---
@@ -104,20 +117,19 @@ class QuestionnairesController < ApplicationController
     params.require(:questionnaire).permit(:code, :title, :description, :duration_minutes)
   end
 
-  # --- CALCULA RESULTADO ---
+  # --- CALCULA RESULTADO DO USUÁRIO ---
   def calculate_result
-    answers = current_user.user_answer_histories
-                          .where(questionnaire: @questionnaire)
+    answers = current_user.user_answer_histories.where(questionnaire: @questionnaire)
 
     total = @questionnaire.questions.count
     correct = answers.select { |a| a.is_correct }.count
     percentage = ((correct.to_f / total) * 100).round(2)
 
-    UserResult.find_or_create_by(user: current_user, questionnaire: @questionnaire) do |result|
-      result.correct_answers = correct
-      result.total_questions = total
-      result.score = percentage
-      result.submitted_at = Time.current
-    end
+    result = UserResult.find_or_initialize_by(user: current_user, questionnaire: @questionnaire)
+    result.correct_answers = correct
+    result.total_questions = total
+    result.score = percentage
+    result.submitted_at = Time.current
+    result.save!
   end
 end

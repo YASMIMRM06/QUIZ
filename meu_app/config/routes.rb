@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     get :respond
     post :submit_answers
     get :result
+    get :all_results
   end
 end
   

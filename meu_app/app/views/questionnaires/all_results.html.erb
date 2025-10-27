@@ -1,0 +1,46 @@
+<% content_for :title, "Resultados do Questionário" %>
+
+<div class="max-w-6xl mx-auto mt-10 bg-white border border-pink-200 rounded-3xl shadow-md p-8 space-y-8">
+  <h1 class="text-4xl font-bold text-pink-700 text-center mb-6">
+    Resultados de: <%= @questionnaire.title %>
+  </h1>
+
+  <p class="text-gray-600 text-center mb-8">
+    <%= @questionnaire.description %>
+  </p>
+
+  <% if @all_results.any? %>
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200 rounded-xl shadow-sm">
+        <thead>
+          <tr class="bg-pink-100 text-pink-700">
+            <th class="py-3 px-4 text-left">Usuário</th>
+            <th class="py-3 px-4 text-left">E-mail</th>
+            <th class="py-3 px-4 text-center">Acertos</th>
+            <th class="py-3 px-4 text-center">Total</th>
+            <th class="py-3 px-4 text-center">Pontuação (%)</th>
+            <th class="py-3 px-4 text-center">Data de Envio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @all_results.each do |result| %>
+            <tr class="border-t hover:bg-pink-50 transition">
+              <td class="py-3 px-4 font-medium text-gray-700"><%= result.user.name %></td>
+              <td class="py-3 px-4 text-gray-500"><%= result.user.email %></td>
+              <td class="py-3 px-4 text-center"><%= result.correct_answers %></td>
+              <td class="py-3 px-4 text-center"><%= result.total_questions %></td>
+              <td class="py-3 px-4 text-center font-semibold text-pink-700"><%= result.score %>%</td>
+              <td class="py-3 px-4 text-center"><%= result.submitted_at.strftime("%d/%m/%Y %H:%M") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-gray-500 text-center text-lg">Nenhum resultado disponível ainda.</p>
+  <% end %>
+
+  <div class="text-center mt-10">
+    <%= link_to "Voltar", questionnaires_path, class: "inline-block rounded-xl px-5 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold transition" %>
+  </div>
+</div>
