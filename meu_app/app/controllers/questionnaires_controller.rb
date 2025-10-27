@@ -1,75 +1,61 @@
 class QuestionnairesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_questionnaire, only: %i[
-    respond question submit_answer result show edit update destroy
-  ]
+  before_action :set_questionnaire, only: %i[respond submit_answers result show edit update destroy]
 
+  # --- INÍCIO DO QUESTIONÁRIO ---
   def respond
-    @first_question = @questionnaire.questions.first
-    authorize @first_question
+    @questions = @questionnaire.questions.includes(:question_options)
+    authorize @questionnaire, :respond?
   end
 
-  def question
-    @question = @questionnaire.questions.find(params[:id])
-    authorize @question
-  end
+  # --- ENVIO DE TODAS AS RESPOSTAS ---
+  def submit_answers
+    authorize @questionnaire, :submit_answer?
 
-  def submit_answer
-    @question = @questionnaire.questions.find(params[:id])
-    authorize @question
+    params[:answers]&.each do |question_id, option_id|
+      question = @questionnaire.questions.find(question_id)
+      next if UserAnswerHistory.exists?(user: current_user, question: question)
 
-    # Evita respostas duplicadas
-    already_answered = UserAnswerHistory.exists?(user: current_user, question: @question)
-    unless already_answered
-      question_option = QuestionOption.find_by(id: params[:option_id])
+      option = QuestionOption.find(option_id)
       UserAnswerHistory.create!(
         user: current_user,
         questionnaire: @questionnaire,
-        question: @question,
-        question_option_id: question_option.id,
-        is_correct: question_option.is_correct,
+        question: question,
+        question_option_id: option.id,
+        is_correct: option.is_correct,
         answered_at: Time.current
       )
     end
 
-    # Ir para próxima questão ou finalizar
-    next_question = @questionnaire.questions.where("id > ?", @question.id).first
+    calculate_result
 
-    if next_question
-      redirect_to question_questionnaire_path(@questionnaire, next_question)
-    else
-      calculate_result
-      redirect_to result_questionnaire_path(@questionnaire), notice: "Questionário finalizado!"
-    end
+    redirect_to result_questionnaire_path(@questionnaire), notice: "Questionário finalizado!"
   end
 
+  # --- RESULTADO DO USUÁRIO ---
   def result
     @user_result = current_user.user_results.find_by(questionnaire: @questionnaire)
-    authorize @user_result
+    authorize @questionnaire, :result?
   end
 
-  # GET /questionnaires
+  # --- CRUD DE QUESTIONÁRIOS ---
   def index
     @questionnaires = policy_scope(Questionnaire)
   end
 
-  # GET /questionnaires/1
   def show
     authorize @questionnaire
   end
 
-  # GET /questionnaires/new ✅ Tempo mínimo de 15 minutos definido automaticamente
   def new
     @questionnaire = Questionnaire.new(duration_minutes: 15)
     authorize @questionnaire
   end
 
-  # GET /questionnaires/1/edit
   def edit
     authorize @questionnaire
   end
 
-  # POST /questionnaires
   def create
     @questionnaire = Questionnaire.new(questionnaire_params)
     authorize @questionnaire
@@ -77,7 +63,7 @@ class QuestionnairesController < ApplicationController
 
     respond_to do |format|
       if @questionnaire.save
-        format.html { redirect_to @questionnaire, notice: "Questionnaire was successfully created." }
+        format.html { redirect_to @questionnaire, notice: "Questionário criado com sucesso." }
         format.json { render :show, status: :created, location: @questionnaire }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -86,13 +72,11 @@ class QuestionnairesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /questionnaires/1
   def update
     authorize @questionnaire
-
     respond_to do |format|
       if @questionnaire.update(questionnaire_params)
-        format.html { redirect_to @questionnaire, notice: "Questionnaire was successfully updated.", status: :see_other }
+        format.html { redirect_to @questionnaire, notice: "Questionário atualizado com sucesso.", status: :see_other }
         format.json { render :show, status: :ok, location: @questionnaire }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -101,13 +85,11 @@ class QuestionnairesController < ApplicationController
     end
   end
 
-  # DELETE /questionnaires/1
   def destroy
     authorize @questionnaire
     @questionnaire.destroy!
-
     respond_to do |format|
-      format.html { redirect_to questionnaires_path, notice: "Questionnaire was successfully destroyed.", status: :see_other }
+      format.html { redirect_to questionnaires_path, notice: "Questionário excluído com sucesso.", status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -122,20 +104,20 @@ class QuestionnairesController < ApplicationController
     params.require(:questionnaire).permit(:code, :title, :description, :duration_minutes)
   end
 
+  # --- CALCULA RESULTADO ---
   def calculate_result
-    answers = current_user.user_answer_histories.joins(:question_option).where(questions: { questionnaire_id: @questionnaire.id })
+    answers = current_user.user_answer_histories
+                          .where(questionnaire: @questionnaire)
 
     total = @questionnaire.questions.count
-    correct = answers.where(question_options: { is_correct: true }).count
+    correct = answers.select { |a| a.is_correct }.count
     percentage = ((correct.to_f / total) * 100).round(2)
 
-    UserResult.create!(
-      user: current_user,
-      questionnaire: @questionnaire,
-      correct_answers: correct,
-      total_questions: total,
-      score: percentage,
-      submitted_at: Time.current
-    )
+    UserResult.find_or_create_by(user: current_user, questionnaire: @questionnaire) do |result|
+      result.correct_answers = correct
+      result.total_questions = total
+      result.score = percentage
+      result.submitted_at = Time.current
+    end
   end
 end

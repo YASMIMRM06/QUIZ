@@ -69,10 +69,10 @@ O sistema implementa autenticação com diferentes **níveis de acesso** (admin,
 ## 🖼️ Telas do Sistema
 
 ### 🔑 Login / Inicial
-![Tela Inicial](/meu_app/img/image.png)
+![Tela Inicial](img/image.png)
 
 ### 📝 Cadastro
-![Cadastro](/meu_app/img/image-1.png)
+![Cadastro](img/image-1.png)
 
 ### 🔄 Recuperação de Senha
 ![Recuperação](/meu_app/img/image-2.png)
@@ -100,19 +100,26 @@ O sistema implementa autenticação com diferentes **níveis de acesso** (admin,
 ### ❓ Questões
 
 **Lista de Questões**  
-![Lista Questões](/meu_app/img/image-9.png)
+![Lista Questões](img/image-9.png)
 
 **Nova Questão**
 - Sem questionário vinculado:  
-  ![Sem Questionário](/meu_app/img/image-10.png)  
+  ![Sem Questionário](img/image-10.png)  
 - Com questionário vinculado:  
-  ![Com Questionário](/meu_app/img/image-15.png)
+  ![Com Questionário](img/image-15.png)
 
 **Opções de Questões**
 - Sem opções:  
-  ![Sem Opções](/meu_app/img/image-12.png)
+  ![Sem Opções](img/image-12.png)
 - Com opções:  
-  ![Com Opções](/meu_app/img/image-14.png)
+  ![Com Opções](img/image-14.png)
+
+  ### 🖥️ Aluno
+**Tela Inicial**  
+
+
+**Lista de Questionários**  
+
 
 ---
 
@@ -175,3 +182,4 @@ Este projeto é de uso educacional e não possui fins comerciais.
 
 
 
+![alt text](img/image-14.png)

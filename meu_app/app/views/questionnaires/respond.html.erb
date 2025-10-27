@@ -1,6 +1,23 @@
-<div class="max-w-3xl mx-auto mt-10 bg-pink-50 border border-pink-200 rounded-3xl shadow-md p-8 text-center space-y-6">
-  <h1 class="font-bold text-3xl text-pink-700"><%= @questionnaire.title %></h1>
-  <p class="text-pink-700"><%= @questionnaire.description %></p>
+<h1 class="text-3xl font-bold mb-6 text-center"><%= @questionnaire.title %></h1>
 
-  <%= link_to "Começar Questionário", question_questionnaire_path(@questionnaire, @first_question), class: "inline-block rounded-xl px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-bold transition" %>
+<%= form_with url: submit_answers_questionnaire_path(@questionnaire), method: :post, local: true do %>
+  <% @questions.each do |question| %>
+    <div class="question mb-6 p-4 bg-pink-50 rounded-lg shadow-sm">
+      <p class="font-semibold mb-3"><%= question.enunciation %></p>
+      
+      <% question.question_options.each do |option| %>
+        <div class="flex items-center mb-2">
+          <%= radio_button_tag "answers[#{question.id}]", option.id, false, id: "answers_#{question.id}_#{option.id}" %>
+          <%= label_tag "answers_#{question.id}_#{option.id}", option.title, class: "ml-2" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="mt-6 text-center">
+    <%= submit_tag "Enviar Respostas", class: "bg-pink-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-pink-700" %>
+  </div>
+<% end %>
+<div class="mt-6 text-center">
+  <%= link_to "Voltar aos Questionários", questionnaires_path, class: "bg-pink-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-pink-700" %>
 </div>

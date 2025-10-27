@@ -6,13 +6,12 @@ Rails.application.routes.draw do
   devise_for :users
 
   resources :questionnaires do
-    member do
-      get :respond
-      get 'question/:id', to: 'questionnaires#question', as: :question
-      post 'question/:id/answer', to: 'questionnaires#submit_answer', as: :submit_answer
-      get :result
-    end
+  member do
+    get :respond
+    post :submit_answers
+    get :result
   end
+end
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

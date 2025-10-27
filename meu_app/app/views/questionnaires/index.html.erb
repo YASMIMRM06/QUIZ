@@ -7,7 +7,10 @@
 
   <div class="flex justify-between items-center mb-4">
     <h1 class="font-bold text-4xl text-pink-700">Questionários</h1>
-    <%= link_to "Novo Questionário", new_questionnaire_path, class: "rounded-xl px-3.5 py-2.5 bg-pink-500 hover:bg-pink-600 text-white font-medium transition" %>
+
+    <% if policy(Questionnaire).new? %>
+      <%= link_to "Novo Questionário", new_questionnaire_path, class: "rounded-xl px-3.5 py-2.5 bg-pink-500 hover:bg-pink-600 text-white font-medium transition" %>
+    <% end %>
   </div>
 
   <div id="questionnaires" class="space-y-5">
@@ -16,9 +19,25 @@
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
           <%= render questionnaire %>
           <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+
+            <!-- Todos podem ver -->
             <%= link_to "Ver", questionnaire, class: "w-full sm:w-auto text-center rounded-xl px-3.5 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium transition" %>
-            <%= link_to "Editar", edit_questionnaire_path(questionnaire), class: "w-full sm:w-auto text-center rounded-xl px-3.5 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium transition" %>
-            <%= button_to "Excluir", questionnaire, method: :delete, class: "w-full sm:w-auto rounded-xl px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer transition", data: { turbo_confirm: "Tem certeza?" } %>
+
+            <!-- Alunos podem responder -->
+            <% if policy(questionnaire).respond? %>
+              <%= link_to "Responder", respond_questionnaire_path(questionnaire), class: "w-full sm:w-auto text-center rounded-xl px-3.5 py-2.5 bg-green-100 hover:bg-green-200 text-green-700 font-medium transition" %>
+            <% end %>
+
+            <!-- Admin e moderador podem editar -->
+            <% if policy(questionnaire).edit? %>
+              <%= link_to "Editar", edit_questionnaire_path(questionnaire), class: "w-full sm:w-auto text-center rounded-xl px-3.5 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium transition" %>
+            <% end %>
+
+            <!-- Admin e moderador podem excluir -->
+            <% if policy(questionnaire).destroy? %>
+              <%= button_to "Excluir", questionnaire, method: :delete, class: "w-full sm:w-auto rounded-xl px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer transition", data: { turbo_confirm: "Tem certeza?" } %>
+            <% end %>
+
           </div>
         </div>
       <% end %>

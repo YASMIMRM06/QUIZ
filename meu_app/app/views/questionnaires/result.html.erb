@@ -1,8 +1,18 @@
-<div class="max-w-3xl mx-auto mt-10 bg-pink-50 border border-pink-200 rounded-3xl shadow-md p-8 text-center space-y-6">
-  <h1 class="font-bold text-3xl text-pink-700">Resultado</h1>
+<h1 class="text-3xl font-bold mb-6 text-center"><%= @questionnaire.title %> - Resultado</h1>
 
-  <p class="text-pink-700 text-lg">Você acertou <strong><%= @user_result.correct_answers %></strong> de <strong><%= @user_result.total_questions %></strong>.</p>
-  <p class="text-pink-700 text-lg">Pontuação: <strong><%= @user_result.score_percentage %>%</strong></p>
+<% if @user_result.present? %>
+  <p class="text-lg text-center mb-4">
+    Você acertou <strong><%= @user_result.correct_answers %></strong> de <strong><%= @user_result.total_questions %></strong> questões.
+  </p>
+  <p class="text-lg text-center">
+    Pontuação: <strong><%= @user_result.score %> %</strong>
+  </p>
+<% else %>
+  <p class="text-center text-red-600 font-semibold">
+    Nenhum resultado encontrado. Por favor, envie suas respostas primeiro.
+  </p>
+<% end %>
 
-  <%= link_to "Voltar aos questionários", questionnaires_path, class: "inline-block rounded-xl px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-bold transition" %>
+<div class="mt-6 text-center">
+  <%= link_to "Voltar aos Questionários", questionnaires_path, class: "bg-pink-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-pink-700" %>
 </div>

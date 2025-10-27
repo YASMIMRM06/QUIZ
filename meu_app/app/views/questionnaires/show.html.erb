@@ -10,8 +10,14 @@
   <%= render @questionnaire %>
 
   <div class="flex flex-col sm:flex-row justify-center gap-2 mt-4">
-    <%= link_to "Editar", edit_questionnaire_path(@questionnaire), class: "inline-block rounded-xl px-3.5 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium transition" %>
+    <% if policy(@questionnaire).edit? %>
+      <%= link_to "Editar", edit_questionnaire_path(@questionnaire), class: "inline-block rounded-xl px-3.5 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium transition" %>
+    <% end %>
+
     <%= link_to "Voltar", questionnaires_path, class: "inline-block rounded-xl px-3.5 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium transition" %>
-    <%= button_to "Excluir", @questionnaire, method: :delete, class: "inline-block rounded-xl px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-medium cursor-pointer transition", data: { turbo_confirm: "Tem certeza?" } %>
+
+    <% if policy(@questionnaire).destroy? %>
+      <%= button_to "Excluir", @questionnaire, method: :delete, class: "inline-block rounded-xl px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-medium cursor-pointer transition", data: { turbo_confirm: "Tem certeza?" } %>
+    <% end %>
   </div>
 </div>
